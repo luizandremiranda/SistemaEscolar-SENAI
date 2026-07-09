@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sistema Escolar</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">       
+        <span class="logo-text">Sistema Escolar</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- PAINEL DE CONTROLE -->
+    <section class="controls-panel">
+      <div class="controls-row">
+        <!-- Seletor de turma -->
+        <div class="control-group">
+          <label for="selTurma">Turma</label>
+          <select id="selTurma">
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
+        </div>
+
+        <!-- Filtro por situação -->
+        <div class="control-group">
+          <label for="selSituacao">Situação</label>
+          <select id="selSituacao">
+            <option value="">Todos</option>
+            <option value="Aprovado">Aprovado</option>
+            <option value="Reprovado">Reprovado</option>
+          </select>
+        </div>
+
+        <!-- Filtro por matéria -->
+        <div class="control-group">
+          <label for="selMateria">Matéria</label>
+          <select id="selMateria">
+            <option value="">Todas</option>
+            <option value="Matemática">Matemática</option>
+            <option value="Português">Português</option>
+            <option value="Ciências">Ciências</option>
+            <option value="História">História</option>
+            <option value="Geografia">Geografia</option>
+          </select>
+        </div>
+
+        <!-- Busca por aluno -->
+        <div class="control-group search-group">
+          <label for="inputBusca">Buscar Aluno</label>
+          <input type="text" id="inputBusca" placeholder="Digite o nome..." />
+        </div>
+
+        <!-- Botão adicionar -->
+        <div class="control-group btn-group">
+          <button class="btn btn-primary" id="btnAddAluno">+ Adicionar Aluno</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TÍTULO DA TURMA -->
+    <section class="table-section">
+      <div class="table-header">
+        <h2 id="tituloTurma">6º Ano</h2>
+        <span id="totalAlunos" class="badge">0 alunos</span>
+      </div>
+
+      <!-- TABELA -->
+      <div class="table-wrapper">
+        <table id="tabelaAlunos">
+          <thead>
+            <tr>
+              <th>Matrícula</th>
+              <th>Nome</th>
+              <th>Turno</th>
+              <th id="thMateria">Matéria (Todas)</th>
+              <th>Média Anual</th>
+              <th>Situação</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyAlunos">
+            <!-- preenchido via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL: DETALHES DO ALUNO
+  ============================================================ -->
+  <div class="modal-overlay" id="modalDetalhes">
+    <div class="modal">
+      <button class="modal-close" id="btnCloseDetalhes">&times;</button>
+      <h2 class="modal-title">Ficha do Aluno</h2>
+
+      <div class="modal-body">
+        <div class="ficha-grid">
+          <div class="ficha-item"><span class="ficha-label">Nome Completo</span><span id="dNome">—</span></div>
+          <div class="ficha-item"><span class="ficha-label">Matrícula</span><span id="dMatricula">—</span></div>
+          <div class="ficha-item"><span class="ficha-label">Turma</span><span id="dTurma">—</span></div>
+          <div class="ficha-item"><span class="ficha-label">Turno</span><span id="dTurno">—</span></div>
+          <div class="ficha-item"><span class="ficha-label">Responsável</span><span id="dResponsavel">—</span></div>
+          <div class="ficha-item"><span class="ficha-label">Contato</span><span id="dContato">—</span></div>
+          <div class="ficha-item"><span class="ficha-label">Frequência</span><span id="dFrequencia">—</span></div>
+        </div>
+
+        <h3 class="notas-title">Notas por Matéria</h3>
+        <div id="notasContainer" class="notas-container">
+          <!-- cards de matéria -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnEditarNotas">✏️ Editar Notas</button>
+        <button class="btn btn-close-modal" id="btnFecharFicha">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: EDITAR / ADICIONAR NOTAS
+  ============================================================ -->
+  <div class="modal-overlay" id="modalNotas">
+    <div class="modal modal-notas">
+      <button class="modal-close" id="btnCloseNotas">&times;</button>
+      <h2 class="modal-title">Editar Notas — <span id="editNomeAluno"></span></h2>
+
+      <div class="modal-body">
+        <div id="formNotas" class="form-notas">
+          <!-- gerado via JS -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btnSalvarNotas">💾 Salvar Notas</button>
+        <button class="btn btn-close-modal" id="btnCancelarNotas">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: ADICIONAR ALUNO
+  ============================================================ -->
+  <div class="modal-overlay" id="modalAddAluno">
+    <div class="modal modal-form">
+      <button class="modal-close" id="btnCloseAdd">&times;</button>
+      <h2 class="modal-title">Adicionar Aluno</h2>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Nome Completo *</label>
+            <input type="text" id="addNome" placeholder="Nome completo do aluno" />
+          </div>
+          <div class="form-group">
+            <label>Turma *</label>
+            <select id="addTurma">
+              <option value="6">6º Ano</option>
+              <option value="7">7º Ano</option>
+              <option value="8">8º Ano</option>
+              <option value="9">9º Ano</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Turno *</label>
+            <select id="addTurno">
+              <option value="Dia">Dia</option>
+              <option value="Noite">Noite</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Nome do Responsável *</label>
+            <input type="text" id="addResponsavel" placeholder="Nome do responsável" />
+          </div>
+          <div class="form-group full">
+            <label>Contato do Responsável *</label>
+            <input type="text" id="addContato" placeholder="(00) 00000-0000" />
+          </div>
+          <div class="form-group">
+            <label>Frequência (%)</label>
+            <input type="number" id="addFrequencia" min="0" max="100" value="100" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btnSalvarAluno">✅ Salvar</button>
+        <button class="btn btn-close-modal" id="btnCancelarAdd">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: CONFIRMAR EXCLUSÃO
+  ============================================================ -->
+  <div class="modal-overlay" id="modalConfirm">
+    <div class="modal modal-confirm">
+      <h2 class="modal-title">⚠️ Confirmar Exclusão</h2>
+      <div class="modal-body">
+        <p>Deseja realmente excluir o aluno <strong id="confirmNome"></strong>?</p>
+        <p class="text-muted">Esta ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="btnConfirmDel">🗑️ Excluir</button>
+        <button class="btn btn-close-modal" id="btnCancelDel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
